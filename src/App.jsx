@@ -4,7 +4,7 @@ import Home from './Home';
 import Login from './Login';
 const App = () => {
     return (
-        <Router basename={process.env.PUBLIC_URL}>
+        <Router basename={window.location.pathname || ''}>
             <Switch>
                 <Route path="/" exact component={Login}/>
                 <Route path="/home" component={Home}/>
