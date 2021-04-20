@@ -1,6 +1,7 @@
 const baseURL = "https://evolbit-api.herokuapp.com/";
 const loginEndpoint = "api/auth/login";
 const getUserEndpoint = "api/usuarios";
+const getUserByIdEndpoint = "api/usuarios/detail";
 
 export const login = async (email, password) => {
     try{
@@ -47,4 +48,76 @@ export const getUser = async(filterName = "") => {
     }catch(e){
         return [];
     }
+}
+export const editUser = async(user, uid) => {
+    try{
+        var raw = JSON.stringify({
+            "id": uid,
+            "altura": user.altura,
+            "nombres": user.nombres,
+            "email": user.email,
+            "photoUrl": user.photoUrl
+        });
+        const resp = await fetch(baseURL + getUserEndpoint + "/" + uid , {
+            'method': 'PUT',
+	        'mode': 'no-cors',
+            'body': raw,
+            'redirect': 'follow',
+	        'headers': {
+                "Content-Type": "application/json",
+            	'Access-Control-Allow-Origin': '*',
+        	}
+    	});
+        const text = await resp.text();
+        console.log(text);
+        const {usuario} = JSON.parse(text);
+        return usuario;
+    }catch(e){
+        return [];
+    }
+}
+export const getUserById = async(id) => {
+    try{
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+          };
+        
+          const resp = await fetch(baseURL + getUserByIdEndpoint + "/" + id , requestOptions);
+          const text = await resp.text();
+          const usuario = JSON.parse(text);
+          return usuario;
+    }catch(e){
+        return [];
+    }
+}
+export const createUser = async (email, password) => {
+    try{
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        
+        var raw = JSON.stringify({
+            "email": email,
+            "password": password
+        });
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+    
+        const resp = await fetch(baseURL + getUserEndpoint, requestOptions);
+        const body = await resp.text();
+        const usuario = JSON.parse(body);
+        if(resp.status === 200){
+            return usuario;
+        }else{
+            return null;
+        }
+    }catch(e){
+        return null;
+    }
+    
 }
