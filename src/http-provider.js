@@ -1,6 +1,7 @@
 const baseURL = "https://evolbit-api.herokuapp.com/";
 const loginEndpoint = "api/auth/login";
 const getUserEndpoint = "api/usuarios";
+const editUserEndpoint = "api/usuarios/edit";
 const getUserByIdEndpoint = "api/usuarios/detail";
 
 export const login = async (email, password) => {
@@ -51,29 +52,33 @@ export const getUser = async(filterName = "") => {
 }
 export const editUser = async(user, uid) => {
     try{
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
         var raw = JSON.stringify({
             "id": uid,
             "altura": user.altura,
             "nombres": user.nombres,
-            "email": user.email,
             "photoUrl": user.photoUrl
         });
-        const resp = await fetch(baseURL + getUserEndpoint + "/" + uid , {
-            'method': 'PUT',
-	        'mode': 'no-cors',
-            'body': raw,
-            'redirect': 'follow',
-	        'headers': {
-                "Content-Type": "application/json",
-            	'Access-Control-Allow-Origin': '*',
-        	}
-    	});
-        const text = await resp.text();
-        console.log(text);
-        const {usuario} = JSON.parse(text);
-        return usuario;
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+        };
+        const resp = await fetch(baseURL + editUserEndpoint, requestOptions);
+
+        console.log(resp.status);
+        
+        if(resp.status === 200 ){
+            return true;
+        }
+        return false;
     }catch(e){
-        return [];
+        console.log(e);
+        return false;
     }
 }
 export const getUserById = async(id) => {

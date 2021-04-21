@@ -24,18 +24,15 @@ const UserDetail = (props) => {
         "photoUrl": "",
         "altura": 0.0
     });
+    // let { id } = useParams();
     const [selectedDate, setSelectedDate] = React.useState(new Date('2014-08-18T21:11:54'));
     const classes = useStyles();
     const handleDateChange = (date) => {
         setSelectedDate(date);
     };
     const editUserData = async(user, id) => {
-        console.log(user);
-        console.log(id);
-        
-        const userResp = await editUser(user, id);
-        console.log(userResp);
-        if(userResp){
+        const success = await editUser(user, id);
+        if(success === true){
             console.log("Modificación exitosa");
         }else{
             console.log("Modificación fallida");
@@ -103,8 +100,6 @@ const UserDetail = (props) => {
                             margin="normal"
                             id="date-picker-inline"
                             label="Date picker inline"
-                            okLabel="OK"
-                            clearLabel="CANCEL"
                             value={selectedDate}
                             onChange={handleDateChange}
                             KeyboardButtonProps={{
